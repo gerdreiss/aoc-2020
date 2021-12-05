@@ -7,6 +7,8 @@ val hclR   = """hcl:(#[0-9a-f]{6})""".r
 val eclR   = """ecl:(amb|blu|brn|gry|grn|hzl|oth)""".r
 val pidR   = """pid:([0-9]{9})""".r
 
+val fields = List("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
+
 @main def main(): Unit =
   val result = io.Source
     .fromResource("input.txt")
@@ -14,7 +16,7 @@ val pidR   = """pid:([0-9]{9})""".r
     .split("\n\n")
     .count { pass =>
       // part one:
-      // List("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
+      // fields
       //   .map(_ + ":")
       //   .forall(pass.contains)
       // part two:
@@ -27,10 +29,10 @@ val pidR   = """pid:([0-9]{9})""".r
             case eyrR(year) if (2020 to 2030).contains(year.toInt)     => acc + 1
             case hgtCmR(height) if (150 to 193).contains(height.toInt) => acc + 1
             case hgtInR(height) if (59 to 76).contains(height.toInt)   => acc + 1
-            case hclR(color)                                           => acc + 1
-            case eclR(color)                                           => acc + 1
-            case pidR(pid)                                             => acc + 1
+            case hclR(_)                                               => acc + 1
+            case eclR(_)                                               => acc + 1
+            case pidR(_)                                               => acc + 1
             case _                                                     => acc
-        } == 7
+        } == fields.length
     }
   println(result)
