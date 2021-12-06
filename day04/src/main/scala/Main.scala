@@ -13,7 +13,7 @@ val hgtInR: Regex = """hgt:(\d{2})in""".r
 val hclR: Regex   = """hcl:(#[0-9a-f]{6})""".r
 val eclR: Regex   = """ecl:(amb|blu|brn|gry|grn|hzl|oth)""".r
 val pidR: Regex   = """pid:([0-9]{9})""".r
-val cidR: Regex   = """cid:([a-zA-Z0-9]*)""".r
+val cidR: Regex   = """cid:([0-9]{3})""".r
 
 enum EyeColor:
   case AMB, BLU, BRN, GRY, GRN, HZL, OTH
@@ -44,9 +44,6 @@ enum PassToken:
   case PID(pid: String)
   case CID(cid: String)
 
-enum PassKey:
-  case BYR, IYR, EYR, HGT, HCL, ECL, PID, CID
-
 object PassLexer extends RegexParsers:
 
   val byrP: Parser[PassToken]   = byrR ^^ { v => PassToken.BYR(v.drop(4).toInt) }
@@ -60,7 +57,7 @@ object PassLexer extends RegexParsers:
   val pidP: Parser[PassToken]   = pidR ^^ { v => PassToken.PID(v.drop(4)) }
   val cidP: Parser[PassToken]   = cidR ^^ { v => PassToken.CID(v.drop(4)) }
 
-  def token: Parser[PassToken] = byrP | iyrP | eyrP | hgtCmP | hgtInP | hclP | eclP | pidP | cidP
+  def token: Parser[PassToken] = byrP | iyrP | eyrP | hgtP | hclP | eclP | pidP | cidP
 
   import PassToken.*
   def pass: Parser[Option[Pass]] = phrase(repNM(7, 8, token)) ^^ { tokens =>
